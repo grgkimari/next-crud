@@ -5,3 +5,10 @@ export interface ITask{
     dueDate? : Date
     completed : boolean
 }
+export interface ITaskFormValues{
+    id? : string
+    title : string
+    description? : string
+    dueDate? : string
+    completed : boolean
+}
