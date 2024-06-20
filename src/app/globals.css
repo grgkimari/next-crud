@@ -39,4 +39,12 @@ body {
   .regular-text{
     font-family: "Roboto", sans-serif;
   }
+
+  .text-input{
+    width: 90%;
+    height: 50px;
+    border-radius: 45px;
+    padding: 4px;
+    margin: 4px auto;
+  }
 }
