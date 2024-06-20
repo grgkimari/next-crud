@@ -1,26 +1,18 @@
 "use client"
 import "client-only"
-import { ITask } from "@/types"
-import { useState } from "react"
-import { useParams } from "next/navigation"
+import { ITask, ITaskFormValues } from "@/types"
+import {useSearchParams } from "next/navigation"
 import { FormikErrors, useFormik } from "formik"
 
 
 export default function EditTaskPage(){
-    const params = useParams()
-    let title, description, dueDate, completed
-    if(params){
-        title = params.title,
-        description = params.decription,
-        dueDate = params.dueDate,
-        completed = params.completed
-    }
-    const formik = useFormik<ITask>({
+    const params = useSearchParams()
+    const formik = useFormik<ITaskFormValues>({
         initialValues : {
-            title : "",
-            description : "",
-            dueDate : undefined,
-            completed : false
+            title : params ? params.get("title") || "" : "",
+            description : params ? params.get("description") || "" : "",
+            dueDate : params ? params.get("dueDate") || "01/01/1970" : undefined,
+            completed : params ? params.get("completed") === "true" ? true : false : false 
         },
         onSubmit : async(taskValues, {setSubmitting}) => {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks`, {
@@ -44,6 +36,7 @@ export default function EditTaskPage(){
             if(taskValues.title === ""){
                 errors.title = "Title is required"
             }
+            
         }
     })
     console.log(`Form Values : ${JSON.stringify(formik.values)}`)
@@ -59,9 +52,9 @@ export default function EditTaskPage(){
             <label htmlFor="Description">Description</label>
             <input name="description" type="text" title=" title" className="text-input" value={formik.values.description} onChange={formik.handleChange}/>
             <label htmlFor="dueDate">Due Date</label>
-            <input name="dueDate" type="date" title=" title" className="text-input" value={formik.values.dueDate} onChange={formik.handleChange}/>
+            <input name="dueDate" type="date" title=" title" className="text-input" value={formik.values.dueDate || "01/01/1970"} onChange={formik.handleChange}/>
             <div className="flex gap-4 items-center m-4"><label htmlFor="Completed">Completed</label>
-            <input name="Completed" type="checkbox" title="Task title" className="w-4 h-4 rounded-full"  value={formik.values.completed ? "on" : "off"} onChange={formik.handleChange}/></div>
+            <input name="completed" type="checkbox" title="Task title" className="w-4 h-4 rounded-full"  value={formik.values.completed ? "on" : "off"} onChange={formik.handleChange}/></div>
             <button type="submit" title="Submit" className="w-[90%] h-[45px] rounded-3xl bg-blue-500 text-white m-4 p-2">Submit</button>
         </form>
     </div>
